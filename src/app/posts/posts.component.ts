@@ -1,5 +1,5 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { PostService } from '../services/post.service';
 
 @Component({
   selector: 'app-posts',
@@ -8,9 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PostsComponent implements OnInit {
   posts: any[] = [];
-  private url: string = 'http://jsonplaceholder.typicode.com/posts';
 
-  constructor(private http: HttpClient) { 
+  constructor(private service: PostService) { 
     // Only initialize objects here not implementation
   }
 
@@ -20,9 +19,7 @@ export class PostsComponent implements OnInit {
       "title": titleInput.value
     };
 
-    this.http.post(this.url, 
-      JSON.stringify(post)
-    )
+    this.service.createPost(post)
     .subscribe(response => {
       const postRes: any = response;
       if (postRes.hasOwnProperty("id")) {
@@ -33,14 +30,14 @@ export class PostsComponent implements OnInit {
   }
 
   updatePost(post: any){
-    this.http.patch(this.url + `/${post?.id}`, JSON.stringify({ isRead: true }))
+    this.service.updatePost(post)
     .subscribe(response => {
       console.log(response);
     });
   }
 
   deletePost(post: any){
-    this.http.delete(this.url + `/${post?.id}`)
+    this.service.deletePost(post?.id)
     .subscribe(response => {
       let index = this.posts.indexOf(post);
       this.posts.splice(index, 1);
@@ -49,7 +46,7 @@ export class PostsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get(this.url)
+    this.service.getPosts()
     .subscribe(response => {
       let res = JSON.stringify(response);
       this.posts = [];
