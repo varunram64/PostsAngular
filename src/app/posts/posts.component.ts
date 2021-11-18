@@ -2,6 +2,7 @@ import { NotFoundError } from './../common/not-found-error';
 import { AppError } from './../common/AppError';
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../services/post.service';
+import { BadInputError } from '../common/bad-input-error';
 
 @Component({
   selector: 'app-posts',
@@ -9,7 +10,7 @@ import { PostService } from '../services/post.service';
   styleUrls: ['./posts.component.css']
 })
 export class PostsComponent implements OnInit {
-  posts: any[] = [];
+  posts: any = [];
 
   constructor(private service: PostService) { 
     // Only initialize objects here not implementation
@@ -21,7 +22,7 @@ export class PostsComponent implements OnInit {
       "title": titleInput.value
     };
 
-    this.service.createPost(post)
+    this.service.createPost(null)
     .subscribe(response => {
       const postRes: any = response;
       if (postRes.hasOwnProperty("id")) {
@@ -30,11 +31,10 @@ export class PostsComponent implements OnInit {
       }
     },
     (error: AppError) => {
-      if(error instanceof NotFoundError)
+      if(error instanceof BadInputError)
         alert('Form Errors');
       else
-        alert('An unexpected error occurred');
-      console.log(error);
+        throw error;
     });
   }
 
@@ -42,15 +42,11 @@ export class PostsComponent implements OnInit {
     this.service.updatePost(post)
     .subscribe(response => {
       console.log(response);
-    },
-    error => {
-      alert('An unexpected error occurred');
-      console.log(error);
     });
   }
 
   deletePost(post: any){
-    this.service.deletePost(999999999999)
+    this.service.deletePost(post?.id)
     .subscribe(response => {
       let index = this.posts.indexOf(post);
       this.posts.splice(index, 1);
@@ -60,21 +56,17 @@ export class PostsComponent implements OnInit {
       if(error instanceof NotFoundError)
         alert('This post is already been deleted');
       else 
-        alert('An unexpected error occurred');
-      console.log(error);
+        throw error;
     });
   }
 
   ngOnInit() {
     this.service.getPosts()
-    .subscribe(response => {
-      let res = JSON.stringify(response);
-      this.posts = [];
-      this.posts = JSON.parse(res);
-    },
-    error => {
-      alert('An unexpected error occurred');
-      console.log(error);
+    .subscribe(posts => {
+      this.posts = posts;
+      // let res = JSON.stringify(response);
+      // this.posts = [];
+      // this.posts = JSON.parse(res);
     });
   }
 
