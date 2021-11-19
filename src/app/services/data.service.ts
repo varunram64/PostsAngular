@@ -10,7 +10,7 @@ export class DataService {
 
   constructor(private url: string, private http: HttpClient) { }
 
-  getPosts() {
+  getAll() {
     return this.http.get(this.url)
     .pipe(
       map(res => res),
@@ -18,7 +18,7 @@ export class DataService {
     );
   }
 
-  createPost(resource: any) {
+  create(resource: any) {
     return this.http.post(this.url, 
       JSON.stringify(resource)
     )
@@ -27,14 +27,14 @@ export class DataService {
     );
   }
 
-  updatePost(resource: any){
+  update(resource: any){
     return this.http.patch(this.url + `/${resource?.id}`, JSON.stringify({ isRead: true }))
     .pipe(
       catchError(this.handleAPIError)
     );
   }
 
-  deletePost(id: number){
+  delete(id: number){
     return this.http.delete(this.url + `/${id}`)
     .pipe(
       catchError(this.handleAPIError)

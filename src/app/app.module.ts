@@ -7,15 +7,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PostsComponent } from './posts/posts.component';
 import { PostService } from './services/post.service';
+import { FollowersComponent } from './followers/followers.component';
+import { PostsRoutingModule } from './posts/posts-routing.module';
+import { FollowersRoutingModule } from './followers/followers-routing.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostsComponent
+    PostsComponent,
+    FollowersComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    PostsRoutingModule,
+    FollowersRoutingModule,
     HttpClientModule
   ],
   providers: [

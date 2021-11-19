@@ -23,7 +23,7 @@ export class PostsComponent implements OnInit {
     };
     this.posts.splice(0, 0, post);
 
-    this.service.createPost(post)
+    this.service.create(post)
     .subscribe(response => {
       const postRes: any = response;
       if (postRes.hasOwnProperty("id")) {
@@ -41,7 +41,7 @@ export class PostsComponent implements OnInit {
   }
 
   updatePost(post: any){
-    this.service.updatePost(post)
+    this.service.update(post)
     .subscribe(response => {
       console.log(response);
     });
@@ -51,7 +51,7 @@ export class PostsComponent implements OnInit {
     let index = this.posts.indexOf(post);
     this.posts.splice(index, 1);
 
-    this.service.deletePost(post?.id)
+    this.service.delete(post?.id)
     .subscribe(response => {
       console.log(response);
     },
@@ -65,7 +65,7 @@ export class PostsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.getPosts()
+    this.service.getAll()
     .subscribe(posts => {
       this.posts = posts;
       // let res = JSON.stringify(response);
